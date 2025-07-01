@@ -10,3 +10,8 @@
 
 - No Supermaven
 - Unfortunately, Python
+
+## Notes
+
+- Anotar brainstorming
+- En vez de leer el código, explicar que es lo que hace
