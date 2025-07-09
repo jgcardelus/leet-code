@@ -1,49 +1,38 @@
-## This is wrong, try again later!!
+
+def decompress(compressed):
+    def do_decompress(compressed, cursor):
+        i = cursor
+        uncompressed = ""
+        while i < len(compressed):
+            character = compressed[i]
+
+            if ord(character) >= 97 and ord(character) <= 122:
+                uncompressed += character
+                i += 1
+                continue
+
+            if character == "]":
+                break
+
+            digits = ""
+            while i < len(compressed) and compressed[i].isdigit():
+                digits += compressed[i]
+                i += 1
+
+            # where at [
+
+            inner, i = do_decompress(compressed, i+1)
+
+            # returns at ]
+            repeat = int("".join(digits))
+            uncompressed += "".join([inner for i in range(repeat)])
+            i+=1
+
+        return uncompressed, i
 
 
-# Uncompress
-#   Get char, if is letter, uncompressed
-#   Get digits
-#   inner = uncompress()
-#   unfold
-#   return
+    uncompressed, _ = do_decompress(compressed, 0)
+    return uncompressed
 
-
-from collections import deque
-
-
-def uncompress(compressed):
-    compressed = deque([char for char in compressed])
-
-    def do_uncompress(compressed):
-        curr_char = compressed.popleft()
-
-        uncompressed = []
-        while ord(curr_char) >= 97 and ord(curr_char) <= 122 and compressed:
-            uncompressed.append(curr_char)
-            curr_char = compressed.popleft()
-
-        if curr_char == "]" or not compressed:
-            return "".join(uncompressed)
-
-        digits = []
-        while curr_char.isdigit():
-            digits.append(curr_char)
-            curr_char = compressed.popleft()
-
-        repetitions = int("".join(digits))
-
-        inner = do_uncompress(compressed)
-        uncompressed = [inner for i in range(repetitions)]
-
-        return "".join(uncompressed)
-
-    uncompressed = []
-    while compressed:
-        uncompressed.extend(do_uncompress(compressed))
-
-    return "".join(uncompressed)
-
-print(uncompress("3[abc]4[ab]c"))
-# print(uncompress("3[3[a]]"))
-# print(uncompress("a"))
+print(decompress("ab3[2[cd]e]f"))
+print(decompress("abc"))

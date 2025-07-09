@@ -1,34 +1,33 @@
-# Two pointers
-# start and end of container
-# while start > end:
-#   record length
-#   move end
-#
-# calculate volume min(height[start], height[end])
-# move pointers to end, end+1
-#
-# repeat until reached end
+#  ltr -> max at each point
+#  rtl -> max at each point
+#  at every position max(ltr, rtl)
 
-def calculate_volume(heights):
-    if len(heights) <= 2:
-        return 0
+def volumes(heights):
+    left_fill = [0] * len(heights)
+    right_fill = [0] * len(heights)
 
-    start, end = 0, 1
+    left_max = heights[0]
+    for i in range(len(heights)):
+        if heights[i] < left_max:
+           left_fill[i] = left_max - heights[i]
+        else:
+           left_max = heights[i]
+
+    right_max = heights[-1]
+    for i in range(len(heights) - 1, -1, -1):
+        if heights[i] < right_max:
+            right_fill[i] = right_max - heights[i]
+        else:
+            right_max = heights[i]
 
     volume = 0
-    while end < len(heights):
-        bowl = 0
-        while end < len(heights) and heights[start] > heights[end] :
-            bowl += heights[start] - heights[end]
-
-        if end == len(heights):
-            break
-
-        volume += (end - start - 1) * min(heights[start], heights[end])
-        start = end
-        end += 1
+    for i in range(len(heights)):
+        volume += min(left_fill[i], right_fill[i])
 
     return volume
 
-print(calculate_volume([1,3,2,4,1,3,1,4,5,2,2,1,4,2,2]))
-print(calculate_volume([3,1,3]))
+
+
+
+print(volumes([1,3,2,4,1,3,1,4,5,2,2,1,4,2,2]))
+print(volumes([2,1,2,1,2]))
